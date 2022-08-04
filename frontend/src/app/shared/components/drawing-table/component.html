@@ -1,0 +1,35 @@
+<canvas
+  id="canvas"
+  (touchstart)="startPosition($event)"
+  (touchend)="finishedPosition()"
+  (touchmove)="draw($event)"
+  (mousedown)="startPosition($event)"
+  (mouseup)="finishedPosition()"
+  (mousemove)="draw($event)"
+  (mouseleave)="finishedPosition()"
+  #myCanvas
+></canvas>
+
+<div class="tools">
+  <div class="tool">
+    <div class="tool-button pencil-icon" (click)="activatePencil()"></div>
+  </div>
+  <div class="tool">
+    <div class="tool-button eraser-icon" (click)="activateEraser()"></div>
+  </div>
+  <div class="tool">
+    <input
+      class="tool-button"
+      (click)="activatePencil()"
+      (change)="onColorChange($event)"
+      type="color"
+      #colorPicker
+    />
+  </div>
+  <div class="tool">
+    <div class="tool-button download-icon" (click)="download()"></div>
+  </div>
+  <div class="tool">
+    <div class="tool-button clean-icon" (click)="clean()"></div>
+  </div>
+</div>
