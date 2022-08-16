@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { DrawingService } from '../../services/drawing-table';
+import { DrawingService } from '../../services/drawing-service';
 
 @Component({
   selector: 'app-drawing-table',

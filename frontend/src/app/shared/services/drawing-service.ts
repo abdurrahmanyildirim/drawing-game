@@ -1,5 +1,8 @@
 import { ElementRef, Injectable } from '@angular/core';
+import { auditTime, BehaviorSubject } from 'rxjs';
 import { MobilDetectionService } from './mobile-detection';
+import * as LZUTF8 from 'lzutf8';
+import { SocketService } from './socket';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +18,12 @@ export class DrawingService {
   replacementY = 23;
   replacementX = 0;
 
-  constructor(private mobileDetectionService: MobilDetectionService) {}
+  drawingListener = new BehaviorSubject(new Uint8Array());
+
+  constructor(
+    private mobileDetectionService: MobilDetectionService,
+    private socketService: SocketService
+  ) {}
 
   init(canvas: ElementRef<HTMLCanvasElement>): void {
     this.canvas = canvas;
@@ -23,15 +31,20 @@ export class DrawingService {
   }
 
   resizeCanvas(): void {
-    this.content = this.context.getImageData(
+    this.content = this.getCurrentDrawing();
+    const canvasContainer = document.getElementById('canvas-container');
+    this.canvas.nativeElement.width = canvasContainer.clientWidth;
+    this.canvas.nativeElement.height = canvasContainer.clientHeight;
+    this.context.putImageData(this.content, 0, 0);
+  }
+
+  getCurrentDrawing(): ImageData {
+    return this.context.getImageData(
       0,
       0,
       this.canvas.nativeElement.width,
       this.canvas.nativeElement.height
     );
-    this.canvas.nativeElement.width = window.innerWidth;
-    this.canvas.nativeElement.height = window.innerHeight;
-    this.context.putImageData(this.content, 0, 0);
   }
 
   draw(e: MouseEvent | TouchEvent): void {
@@ -47,7 +60,6 @@ export class DrawingService {
       clientX += this.replacementX;
       clientY += this.replacementY;
     }
-
     this.context.lineWidth = this.lineWidth;
     this.context.lineCap = this.lineCap;
     this.context.strokeStyle = this.currentColor;
@@ -62,9 +74,18 @@ export class DrawingService {
     this.draw(event);
   }
 
+  updateStream(): void {
+    const canvasContent = this.canvas.nativeElement.toDataURL();
+    const bufferedContent = LZUTF8.compress(canvasContent, {
+      outputEncoding: 'Base64',
+    });
+    this.socketService.emitDrawing(bufferedContent);
+  }
+
   finishedPosition(): void {
     this.painting = false;
     this.context.beginPath();
+    this.updateStream();
   }
 
   activateEraser(): void {
@@ -106,5 +127,6 @@ export class DrawingService {
       this.canvas.nativeElement.width,
       this.canvas.nativeElement.height
     );
+    this.updateStream();
   }
 }
