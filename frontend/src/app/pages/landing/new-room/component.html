@@ -1,0 +1,57 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Oda Bilgileri</h4>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    (click)="close()"
+  ></button>
+</div>
+<div class="modal-body">
+  <div class="form-group">
+    <label for="name">*Oda İsmi</label>
+    <input
+      class="form-control"
+      [(ngModel)]="name"
+      (ngModelChange)="onNameChange()"
+      name="name"
+      id="name"
+      type="text"
+    />
+  </div>
+  <div class="form-group">
+    <label for="password">*Şifre</label>
+    <input
+      class="form-control"
+      [(ngModel)]="password"
+      [disabled]="!hasPassword"
+      (ngModelChange)="onPasswordChange()"
+      name="password"
+      type="password"
+      id="password"
+    />
+  </div>
+  <div class="form-check checkbox-cover">
+    <input
+      class="checkbox form-check-input"
+      [ngModel]="!hasPassword"
+      (ngModelChange)="hasPassword = !$event"
+      [checked]="!hasPassword"
+      name="hasPassword"
+      id="hasPassword"
+      (ngModelChange)="onHasPasswordChange()"
+      type="checkbox"
+    />
+    <label for="hasPassword">Şifreyi Kaldır</label>
+  </div>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn form-control btn-outline-success"
+    [disabled]="!areInputsValid"
+    (click)="createNewRoom()"
+  >
+    Oluştur
+  </button>
+</div>

@@ -7,13 +7,33 @@ import { MainComponent } from './pages/main/component';
 import { DrawingTableComponent } from './shared/components/drawing-table/component';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { SocketService } from './shared/services/socket';
+import { LandingComponent } from './pages/landing/component';
+import { HttpClientModule } from '@angular/common/http';
+import { LoginComponent } from './pages/login/component';
+import { FormsModule } from '@angular/forms';
+import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NewRoomComponent } from './pages/landing/new-room/component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 @NgModule({
-  declarations: [AppComponent, MainComponent, DrawingTableComponent],
-  imports: [BrowserModule, AppRoutingModule, SocketIoModule.forRoot(config)],
-  providers: [SocketService],
+  declarations: [
+    AppComponent,
+    MainComponent,
+    LandingComponent,
+    DrawingTableComponent,
+    LoginComponent,
+    NewRoomComponent,
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    FormsModule,
+    SocketIoModule.forRoot(config),
+    NgbModule,
+  ],
+  providers: [SocketService, NgbActiveModal],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

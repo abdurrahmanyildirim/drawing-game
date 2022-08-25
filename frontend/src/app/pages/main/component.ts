@@ -1,10 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-} from '@angular/core';
-import { auditTime, throttleTime } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { throttleTime } from 'rxjs';
 import { DrawingService } from 'src/app/shared/services/drawing-service';
 import { SocketService } from 'src/app/shared/services/socket';
 import * as LZUTF8 from 'lzutf8';
@@ -19,9 +14,7 @@ export class MainComponent implements OnInit {
   constructor(
     private socketService: SocketService,
     private drawingService: DrawingService
-  ) {
-    this.socketService.connect();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.socketService

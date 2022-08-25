@@ -1,0 +1,10 @@
+.checkbox-cover {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox {
+  margin-right: 10px;
+}
