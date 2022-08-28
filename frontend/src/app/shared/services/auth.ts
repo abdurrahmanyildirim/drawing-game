@@ -1,18 +1,18 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  user: any;
   constructor(private http: HttpClient) {}
 
   login(name: string) {
-    return this.http.post('http://localhost:3000/login', { name });
+    return this.http.post(environment.baseUrl + '/login', { name });
   }
 
   isLoggedIn(): boolean {
-    return window.sessionStorage.getItem('user') ? true : false;
+    return window.sessionStorage.getItem('player') ? true : false;
   }
 }

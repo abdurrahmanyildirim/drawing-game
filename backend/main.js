@@ -7,13 +7,12 @@ const io = new Server(server, { cors: {} });
 
 const uuid = require('uuid');
 
-
 let corsOpts = {};
 app.use(cors(corsOpts));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const users = new Map();
+const players = new Map();
 const rooms = new Map();
 
 app.get('/', (req, res) => {
@@ -21,11 +20,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/rooms', (req, res) => {
-    res.status(200).send({ payload: [...rooms] });
+    res.status(200).send([...rooms.values()]);
 })
 
 app.post('/create-room', (req, res) => {
-    const { hasPassword, password, name } = req.body;
+    const { hasPassword, password, name, owner } = req.body;
     if (rooms.has(name)) {
         return res.status(404).send({ msg: 'This room name taken.' });
     }
@@ -34,23 +33,42 @@ app.post('/create-room', (req, res) => {
         hasPassword,
         password: password ? password : '',
         name,
-        date: new Date()
+        date: new Date(),
+        owner,
+        players: [owner]
     };
     rooms.set(name, newRoom);
-    res.status(200).send({ payload: newRoom, rooms: [...rooms.values()] });
+    res.status(200).send(newRoom);
 });
+
+app.post('/join-room', (req, res) => {
+    const { player, room } = req.body;
+    const isPlayerExist = players.has(player.name);
+    if (!isPlayerExist) {
+        return res.status(400).send({ msg: 'This player is not exist' });
+    }
+    const isRoomExist = rooms.has(room.name);
+    if (!isRoomExist) {
+        return res.status(400).send({ msg: 'This room is not exist' });
+    }
+    const dbRoom = rooms.get(room.name);
+    dbRoom.players.push(player);
+    rooms.set(room.name, room);
+    return res.status(200).send(dbRoom);
+})
 
 app.post('/login', (req, res) => {
     const { name } = req.body;
-    if (users.has(name)) {
+    if (players.has(name)) {
         return res.status(404).send({ msg: 'Bu kullanıcı ismi alınmış.' });
     }
-    const newUser = {
+    const newPlayer = {
         id: uuid.v4(),
-        name
+        name,
+        point: 0
     }
-    users.set(name, newUser);
-    res.status(200).send({ payload: newUser });
+    players.set(newPlayer, newPlayer);
+    res.status(200).send(newPlayer);
 });
 
 io.on('connection', (socket) => {
@@ -59,9 +77,21 @@ io.on('connection', (socket) => {
         io.emit('drawing', data);
     });
 
+    socket.on('joinRoom', (room) => {
+        socket.join(room.id);
+    });
+
+    socket.on('updateRoom', (room) => {
+        io.to(room.id).emit('updateRoom', room);
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
+
+    socket.on('newRoom', () => {
+        io.emit('newRoom', [...rooms.values()])
+    })
 
     socket.on("error", (err) => {
         console.log(err);

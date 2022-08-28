@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/services/auth';
+import { PlayerService } from 'src/app/shared/services/player';
+import { Player } from 'src/app/shared/services/player/model';
 
 @Component({
   selector: 'app-login',
@@ -12,8 +14,8 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private playerService: PlayerService
   ) {}
 
   ngOnInit(): void {}
@@ -21,10 +23,9 @@ export class LoginComponent implements OnInit {
   login(): void {
     if (this.name.trim().length > 0) {
       this.authService.login(this.name.trim()).subscribe({
-        next: (res: any) => {
-          //   console.log(res);
-          this.authService.user = res.payload;
-          window.sessionStorage.setItem('user', JSON.stringify(res.payload));
+        next: (res: Player) => {
+          this.playerService.player = res;
+          window.sessionStorage.setItem('player', JSON.stringify(res));
           this.router.navigateByUrl('/landing');
         },
         error: (err) => {

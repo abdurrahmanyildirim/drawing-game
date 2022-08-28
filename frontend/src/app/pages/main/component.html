@@ -1,10 +1,26 @@
-<main class="container">
+<main class="main-container">
   <section class="top">
     <app-drawing-table></app-drawing-table>
   </section>
+  <section>
+    <ngb-progressbar
+      type="success"
+      [value]="75"
+      [striped]="true"
+      [animated]="true"
+      ><i>50%</i></ngb-progressbar
+    >
+  </section>
   <section class="bottom">
-    <section class="users">Users</section>
+    <section class="players">
+      <div
+        class="player"
+        *ngFor="let player of roomService.currentRoom.players"
+      >
+        {{player.name}}
+      </div>
+    </section>
     <section class="messages">Messages</section>
-    <img [src]="drawedImg" style="height: 400px; width: 400px" />
+    <!-- <img [src]="drawedImg" style="height: 400px; width: 400px" /> -->
   </section>
 </main>

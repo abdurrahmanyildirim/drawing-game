@@ -1,6 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { SocketService } from 'src/app/shared/services/socket';
+import { PlayerService } from 'src/app/shared/services/player';
 import { RoomService } from '../../../shared/services/room';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-room',
@@ -13,17 +16,12 @@ export class NewRoomComponent {
   hasPassword = false;
   areInputsValid = false;
 
-  // get hasPassword(): boolean {
-  //   return !this.hasPassword;
-  // }
-
-  // set hasPassword(val: boolean) {
-  //   this.hasPassword = !val;
-  // }
-
   constructor(
     public activeModal: NgbActiveModal,
-    private roomService: RoomService
+    private roomService: RoomService,
+    private socketService: SocketService,
+    private playerService: PlayerService,
+    private router: Router
   ) {}
 
   createNewRoom(): void {
@@ -35,17 +33,20 @@ export class NewRoomComponent {
         name: this.name,
         password: this.password,
         hasPassword: this.hasPassword,
+        owner: this.playerService.player,
       })
       .subscribe({
         next: (res) => {
-          console.log(res);
+          this.socketService.emitNewRoom();
+          this.roomService.currentRoom = res;
+          window.sessionStorage.setItem('room', JSON.stringify(res));
           this.activeModal.close();
+          this.router.navigateByUrl('');
         },
         error: (err) => {
           console.log(err);
         },
       });
-    // TODO: Create a room after succesful result close modal
   }
 
   onPasswordChange(): void {

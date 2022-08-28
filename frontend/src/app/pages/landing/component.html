@@ -1,11 +1,16 @@
 <main class="my-container">
   <div class="rooms-container">
-    <div class="room">Oda1</div>
-    <div class="room">Oda2</div>
-    <div class="room">Oda3</div>
-    <div class="room">Oda4</div>
+    <div
+      class="room"
+      *ngFor="let room of (roomService.rooms | async)"
+      (click)="joinRoom(room)"
+    >
+      <span class="room-name"> {{room.name}} </span>
+      <span class="lock lock-icon" *ngIf="room.hasPassword"> </span>
+    </div>
+    <!-- <div *ngIf="!roomService.rooms.value">Aktif Oyun Yok!</div> -->
   </div>
-  <button class="btn btn-md btn-success" (click)="createRoom()">
+  <button class="btn btn-md btn-success create-button" (click)="createRoom()">
     Yeni Oda Oluştur
   </button>
 </main>

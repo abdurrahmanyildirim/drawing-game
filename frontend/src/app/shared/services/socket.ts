@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -8,9 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 export class SocketService {
   drawStream = new BehaviorSubject(null);
 
-  constructor(private socket: Socket) {
-    console.log('SocketService');
-  }
+  constructor(private socket: Socket) {}
 
   connect(): void {
     this.socket.connect();
@@ -24,8 +22,16 @@ export class SocketService {
     this.socket.emit('drawing', content);
   }
 
-  onDrawing() {
+  onDrawing(): Observable<any> {
     return this.socket.fromEvent('drawing');
+  }
+
+  onNewRoomCreated(): Observable<any> {
+    return this.socket.fromEvent('newRoom');
+  }
+
+  emitNewRoom(): void {
+    this.socket.emit('newRoom');
   }
 
   getMessage() {

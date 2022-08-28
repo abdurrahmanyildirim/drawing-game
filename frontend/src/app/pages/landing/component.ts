@@ -1,6 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs';
+import { PlayerService } from 'src/app/shared/services/player';
 import { RoomService } from 'src/app/shared/services/room';
+import { Room } from 'src/app/shared/services/room/model';
 import { NewRoomComponent } from './new-room/component';
 
 @Component({
@@ -8,35 +11,49 @@ import { NewRoomComponent } from './new-room/component';
   templateUrl: './component.html',
   styleUrls: ['./component.css'],
 })
-export class LandingComponent implements OnInit {
+export class LandingComponent implements OnInit, OnDestroy {
   drawedImg = '';
-  rooms: [];
+  subs = new Subscription();
 
   constructor(
-    private roomService: RoomService,
-    private modalService: NgbModal
+    public roomService: RoomService,
+    private modalService: NgbModal,
+    private playerService: PlayerService
   ) {}
 
-  ngOnInit(): void {
-    this.initRooms();
-  }
+  ngOnInit(): void {}
 
-  initRooms(): void {
-    this.roomService.getRooms().subscribe({
-      next: (rooms) => {
-        console.log(rooms);
-      },
-    });
-  }
-
-  createRoom() {
+  createRoom(): void {
     this.modalService
       .open(NewRoomComponent, {
         ariaLabelledBy: 'modal-basic-title',
       })
       .result.then(
-        (result) => {},
+        (result) => {
+          console.log('Room Created');
+        },
         (reason) => {}
       );
+  }
+
+  joinRoom(room: Room): void {
+    const sub = this.roomService
+      .joinRoom(this.playerService.player, room)
+      .subscribe({
+        next: (res) => {
+          // TODO : Inform other clients for new user and update their room data and navigate current user to main route.
+          console.log(res);
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
+    this.subs.add(sub);
+  }
+
+  ngOnDestroy(): void {
+    if (this.subs) {
+      this.subs.unsubscribe();
+    }
   }
 }

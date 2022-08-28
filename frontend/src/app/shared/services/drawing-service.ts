@@ -1,4 +1,4 @@
-import { ElementRef, Injectable } from '@angular/core';
+import { ElementRef, Injectable, OnDestroy } from '@angular/core';
 import { auditTime, BehaviorSubject } from 'rxjs';
 import { MobilDetectionService } from './mobile-detection';
 import * as LZUTF8 from 'lzutf8';
@@ -7,7 +7,7 @@ import { SocketService } from './socket';
 @Injectable({
   providedIn: 'root',
 })
-export class DrawingService {
+export class DrawingService implements OnDestroy {
   canvas: ElementRef<HTMLCanvasElement>;
   context: CanvasRenderingContext2D;
   content = null;
@@ -30,11 +30,10 @@ export class DrawingService {
     this.context = this.canvas.nativeElement.getContext('2d');
   }
 
-  resizeCanvas(): void {
+  resizeCanvas(container: HTMLElement): void {
     this.content = this.getCurrentDrawing();
-    const canvasContainer = document.getElementById('canvas-container');
-    this.canvas.nativeElement.width = canvasContainer.clientWidth;
-    this.canvas.nativeElement.height = canvasContainer.clientHeight;
+    this.canvas.nativeElement.width = container.clientWidth;
+    this.canvas.nativeElement.height = container.clientHeight;
     this.context.putImageData(this.content, 0, 0);
   }
 
@@ -128,5 +127,9 @@ export class DrawingService {
       this.canvas.nativeElement.height
     );
     this.updateStream();
+  }
+
+  ngOnDestroy(): void {
+    throw new Error('Method not implemented.');
   }
 }

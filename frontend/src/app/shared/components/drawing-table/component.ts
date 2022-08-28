@@ -1,4 +1,5 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { auditTime, fromEvent, Subscription } from 'rxjs';
 import { DrawingService } from '../../services/drawing-service';
 
 @Component({
@@ -6,17 +7,21 @@ import { DrawingService } from '../../services/drawing-service';
   templateUrl: './component.html',
   styleUrls: ['./component.css'],
 })
-export class DrawingTableComponent {
+export class DrawingTableComponent implements OnDestroy {
   @ViewChild('myCanvas') canvas: ElementRef<HTMLCanvasElement>;
+  @ViewChild('canvasContainer') canvasContainer: ElementRef<HTMLElement>;
+  resizeListener: Subscription;
 
   constructor(private drawingService: DrawingService) {}
 
   ngAfterViewInit(): void {
     this.drawingService.init(this.canvas);
-    window.addEventListener('resize', () => {
-      this.drawingService.resizeCanvas();
-    });
-    this.drawingService.resizeCanvas();
+    this.resizeListener = fromEvent(window, 'resize')
+      .pipe(auditTime(200))
+      .subscribe(() => {
+        this.drawingService.resizeCanvas(this.canvasContainer.nativeElement);
+      });
+    this.drawingService.resizeCanvas(this.canvasContainer.nativeElement);
   }
 
   draw(event: MouseEvent | TouchEvent): void {
@@ -49,5 +54,11 @@ export class DrawingTableComponent {
 
   clean(): void {
     this.drawingService.clean();
+  }
+
+  ngOnDestroy(): void {
+    if (this.resizeListener) {
+      this.resizeListener.unsubscribe();
+    }
   }
 }

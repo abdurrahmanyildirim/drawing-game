@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MobilDetectionService } from './shared/services/mobile-detection';
-import { SocketService } from './shared/services/socket';
+import { InitializeService } from './shared/services/initialize';
 
 @Component({
   selector: 'app-root',
@@ -8,14 +7,9 @@ import { SocketService } from './shared/services/socket';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  constructor(
-    private mobildDetectionService: MobilDetectionService,
-    private socketService: SocketService
-  ) {
-    this.mobildDetectionService.init();
-  }
+  constructor(public initializeService: InitializeService) {}
 
   ngOnInit(): void {
-    this.socketService.connect();
+    this.initializeService.init();
   }
 }
