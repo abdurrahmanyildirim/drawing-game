@@ -6,13 +6,13 @@ import { AppComponent } from './app.component';
 import { MainComponent } from './pages/main/component';
 import { DrawingTableComponent } from './shared/components/drawing-table/component';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-import { SocketService } from './shared/services/socket';
 import { LandingComponent } from './pages/landing/component';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginComponent } from './pages/login/component';
 import { FormsModule } from '@angular/forms';
 import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NewRoomComponent } from './pages/landing/new-room/component';
+import { MessageComponent } from './pages/main/message/component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -24,6 +24,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     DrawingTableComponent,
     LoginComponent,
     NewRoomComponent,
+    MessageComponent,
   ],
   imports: [
     BrowserModule,
@@ -33,7 +34,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     SocketIoModule.forRoot(config),
     NgbModule,
   ],
-  providers: [SocketService, NgbActiveModal],
+  providers: [NgbActiveModal],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

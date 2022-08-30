@@ -1,0 +1,19 @@
+<div class="message-container">
+  <div class="message-box">
+    <div class="message" *ngFor="let msg of messages">
+      <span class="player-name">{{msg.sender.name}}</span> :
+      <span class="message-content">{{msg.msg}}</span>
+    </div>
+  </div>
+  <div class="message-input">
+    <input
+      type="text"
+      class="form-control my-input"
+      [(ngModel)]="msg"
+      (keydown.enter)="sendMessage()"
+    />
+    <button class="btn btn-primary my-button" (click)="sendMessage()">
+      Send
+    </button>
+  </div>
+</div>

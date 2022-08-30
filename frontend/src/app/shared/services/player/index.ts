@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { SessionStorageService } from '../session-storage';
+import { SessionKey } from '../session-storage/model';
 import { Player } from './model';
 
 @Injectable({
@@ -7,8 +9,9 @@ import { Player } from './model';
 export class PlayerService {
   player: Player;
 
+  constructor(private sessionService: SessionStorageService) {}
+
   initPlayer(): void {
-    const player = window.sessionStorage.getItem('player');
-    this.player = JSON.parse(player);
+    this.player = this.sessionService.getItem(SessionKey.Player);
   }
 }

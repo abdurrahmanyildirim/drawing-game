@@ -14,6 +14,7 @@ app.use(express.urlencoded({ extended: false }));
 
 const players = new Map();
 const rooms = new Map();
+const sockets = new Map();
 
 app.get('/', (req, res) => {
     res.status(200).send('Server Works');
@@ -53,7 +54,7 @@ app.post('/join-room', (req, res) => {
     }
     const dbRoom = rooms.get(room.name);
     dbRoom.players.push(player);
-    rooms.set(room.name, room);
+    rooms.set(room.name, dbRoom);
     return res.status(200).send(dbRoom);
 })
 
@@ -67,7 +68,7 @@ app.post('/login', (req, res) => {
         name,
         point: 0
     }
-    players.set(newPlayer, newPlayer);
+    players.set(name, newPlayer);
     res.status(200).send(newPlayer);
 });
 
@@ -81,17 +82,26 @@ io.on('connection', (socket) => {
         socket.join(room.id);
     });
 
+    socket.on('message', (msg, room) => {
+        io.to(room.id).emit('message', msg);
+    })
+
+    // socket.on('leaveRoom', (room) => {
+    //     socket.leave(room.id);
+    // });
+
     socket.on('updateRoom', (room) => {
         io.to(room.id).emit('updateRoom', room);
+    });
+
+    socket.on('newRoom', (room) => {
+        socket.join(room.id);
+        io.emit('newRoom', [...rooms.values()])
     });
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
-
-    socket.on('newRoom', () => {
-        io.emit('newRoom', [...rooms.values()])
-    })
 
     socket.on("error", (err) => {
         console.log(err);
@@ -100,6 +110,10 @@ io.on('connection', (socket) => {
         }
     });
 });
+
+const heartBeat = (socket) => {
+
+}
 
 
 server.listen('3000', function () {

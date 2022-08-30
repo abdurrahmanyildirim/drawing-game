@@ -1,9 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { SocketService } from 'src/app/shared/services/socket';
 import { PlayerService } from 'src/app/shared/services/player';
 import { RoomService } from '../../../shared/services/room';
 import { Router } from '@angular/router';
+import { SessionStorageService } from 'src/app/shared/services/session-storage';
+import { SessionKey } from 'src/app/shared/services/session-storage/model';
 
 @Component({
   selector: 'app-new-room',
@@ -19,9 +20,9 @@ export class NewRoomComponent {
   constructor(
     public activeModal: NgbActiveModal,
     private roomService: RoomService,
-    private socketService: SocketService,
     private playerService: PlayerService,
-    private router: Router
+    private router: Router,
+    private sessionService: SessionStorageService
   ) {}
 
   createNewRoom(): void {
@@ -37,9 +38,9 @@ export class NewRoomComponent {
       })
       .subscribe({
         next: (res) => {
-          this.socketService.emitNewRoom();
+          this.roomService.emitNewRoom(res);
           this.roomService.currentRoom = res;
-          window.sessionStorage.setItem('room', JSON.stringify(res));
+          this.sessionService.setItem(SessionKey.Room, res);
           this.activeModal.close();
           this.router.navigateByUrl('');
         },

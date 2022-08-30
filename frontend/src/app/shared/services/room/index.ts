@@ -1,9 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Socket } from 'ngx-socket-io';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { PlayerService } from '../player';
 import { Player } from '../player/model';
-import { SocketService } from '../socket';
+import { SessionStorageService } from '../session-storage';
+import { SessionKey } from '../session-storage/model';
 import { Room } from './model';
 
 @Injectable({
@@ -12,15 +15,21 @@ import { Room } from './model';
 export class RoomService {
   rooms = new BehaviorSubject([]);
   currentRoom: Room;
-  constructor(private http: HttpClient, private socketService: SocketService) {}
+  constructor(
+    private http: HttpClient,
+    private socket: Socket,
+    private sessionService: SessionStorageService
+  ) {}
 
   init(): Observable<void> {
     return new Observable((observer) => {
       const sub = this.getRooms().subscribe({
         next: (rooms: Room[]) => {
           this.rooms.next(rooms);
+          // this.listenRoomUpdate();
+          this.listenNewRoomCreated();
           this.listenRoomUpdate();
-          this.currentRoom = JSON.parse(window.sessionStorage.getItem('room'));
+          this.currentRoom = this.sessionService.getItem(SessionKey.Room);
           observer.next();
           observer.complete();
         },
@@ -36,16 +45,41 @@ export class RoomService {
     });
   }
 
-  listenRoomUpdate(): void {
-    this.socketService.onNewRoomCreated().subscribe({
-      next: (rooms) => {
-        console.log(rooms);
-        this.rooms.next(rooms);
-      },
-      error: (err) => {
-        console.log(err);
-      },
+  listenNewRoomCreated(): void {
+    this.socket.on('newRoom', (rooms: Room[]) => {
+      // console.log(rooms);
+      this.rooms.next(rooms);
     });
+  }
+
+  listenRoomUpdate(): void {
+    this.socket.on('updateRoom', (room: Room) => {
+      this.sessionService.setItem(SessionKey.Room, room);
+      this.currentRoom = room;
+    });
+  }
+
+  emitNewRoom(room: Room): void {
+    this.socket.emit('newRoom', room);
+  }
+
+  emitJoinRoom(room: Room): void {
+    this.socket.emit('joinRoom', room);
+  }
+
+  emitLeaveRoom(room: Room): void {
+    this.socket.emit('leaveRoom', room);
+  }
+
+  leaveRoom(player: Player, room: Room): Observable<any> {
+    return this.http.post(environment.baseUrl + '/leave-room', {
+      player,
+      room,
+    });
+  }
+
+  emitUpdateRoom(room: Room): void {
+    this.socket.emit('updateRoom', room);
   }
 
   createRoom(room: Room): Observable<Room> {

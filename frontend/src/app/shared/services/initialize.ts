@@ -3,7 +3,6 @@ import { forkJoin } from 'rxjs';
 import { MobilDetectionService } from './mobile-detection';
 import { PlayerService } from './player';
 import { RoomService } from './room';
-import { SocketService } from './socket';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +12,6 @@ export class InitializeService {
 
   constructor(
     private roomService: RoomService,
-    private socketService: SocketService,
     private mobildDetectionService: MobilDetectionService,
     private playerService: PlayerService
   ) {}

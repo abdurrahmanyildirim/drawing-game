@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { auditTime, fromEvent, Subscription } from 'rxjs';
-import { DrawingService } from '../../services/drawing-service';
+import { DrawingService } from '../../services/drawing';
 
 @Component({
   selector: 'app-drawing-table',

@@ -3,13 +3,8 @@
     <app-drawing-table></app-drawing-table>
   </section>
   <section>
-    <ngb-progressbar
-      type="success"
-      [value]="75"
-      [striped]="true"
-      [animated]="true"
-      ><i>50%</i></ngb-progressbar
-    >
+    <ngb-progressbar [value]="100" [striped]="true" [animated]="true">
+    </ngb-progressbar>
   </section>
   <section class="bottom">
     <section class="players">
@@ -17,10 +12,16 @@
         class="player"
         *ngFor="let player of roomService.currentRoom.players"
       >
-        {{player.name}}
+        <div class="player-picture player-icon"></div>
+        <div class="player-info">
+          <div>{{player.name}}</div>
+          <div>{{player.point}} Point</div>
+        </div>
       </div>
     </section>
-    <section class="messages">Messages</section>
-    <!-- <img [src]="drawedImg" style="height: 400px; width: 400px" /> -->
+    <section class="messages">
+      <app-message></app-message>
+    </section>
+    <!-- <img [src]="drawingService.drawedImg" style="height: 400px; width: 400px" /> -->
   </section>
 </main>

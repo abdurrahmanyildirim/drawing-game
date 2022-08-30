@@ -1,18 +1,23 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, isDevMode } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { SessionStorageService } from './session-storage';
+import { SessionKey } from './session-storage/model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private sessionService: SessionStorageService
+  ) {}
 
   login(name: string) {
     return this.http.post(environment.baseUrl + '/login', { name });
   }
 
   isLoggedIn(): boolean {
-    return window.sessionStorage.getItem('player') ? true : false;
+    return this.sessionService.getItem(SessionKey.Player) ? true : false;
   }
 }

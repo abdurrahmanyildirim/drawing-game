@@ -1,8 +1,7 @@
 import { ElementRef, Injectable, OnDestroy } from '@angular/core';
-import { auditTime, BehaviorSubject } from 'rxjs';
 import { MobilDetectionService } from './mobile-detection';
 import * as LZUTF8 from 'lzutf8';
-import { SocketService } from './socket';
+import { Socket } from 'ngx-socket-io';
 
 @Injectable({
   providedIn: 'root',
@@ -18,16 +17,17 @@ export class DrawingService implements OnDestroy {
   replacementY = 23;
   replacementX = 0;
 
-  drawingListener = new BehaviorSubject(new Uint8Array());
+  drawedImg = null;
 
   constructor(
     private mobileDetectionService: MobilDetectionService,
-    private socketService: SocketService
+    private socket: Socket
   ) {}
 
   init(canvas: ElementRef<HTMLCanvasElement>): void {
     this.canvas = canvas;
     this.context = this.canvas.nativeElement.getContext('2d');
+    this.listenDrawedImage();
   }
 
   resizeCanvas(container: HTMLElement): void {
@@ -44,6 +44,15 @@ export class DrawingService implements OnDestroy {
       this.canvas.nativeElement.width,
       this.canvas.nativeElement.height
     );
+  }
+
+  listenDrawedImage(): void {
+    this.socket.on('drawing', (newDrawing: string) => {
+      const decompressedPng = LZUTF8.decompress(newDrawing, {
+        inputEncoding: 'Base64',
+      });
+      this.drawedImg = decompressedPng;
+    });
   }
 
   draw(e: MouseEvent | TouchEvent): void {
@@ -77,8 +86,8 @@ export class DrawingService implements OnDestroy {
     const canvasContent = this.canvas.nativeElement.toDataURL();
     const bufferedContent = LZUTF8.compress(canvasContent, {
       outputEncoding: 'Base64',
-    });
-    this.socketService.emitDrawing(bufferedContent);
+    }) as string;
+    this.socket.emit('drawing', bufferedContent);
   }
 
   finishedPosition(): void {

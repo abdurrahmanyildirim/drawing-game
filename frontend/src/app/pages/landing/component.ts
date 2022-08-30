@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { PlayerService } from 'src/app/shared/services/player';
@@ -18,7 +19,8 @@ export class LandingComponent implements OnInit, OnDestroy {
   constructor(
     public roomService: RoomService,
     private modalService: NgbModal,
-    private playerService: PlayerService
+    private playerService: PlayerService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {}
@@ -40,9 +42,9 @@ export class LandingComponent implements OnInit, OnDestroy {
     const sub = this.roomService
       .joinRoom(this.playerService.player, room)
       .subscribe({
-        next: (res) => {
-          // TODO : Inform other clients for new user and update their room data and navigate current user to main route.
-          console.log(res);
+        next: (res: Room) => {
+          this.roomService.currentRoom = res;
+          this.router.navigateByUrl('');
         },
         error: (err) => {
           console.log(err);
