@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DrawingService } from 'src/app/shared/services/drawing';
+import { GameService } from 'src/app/shared/services/game';
 import { MessageService } from 'src/app/shared/services/message';
 import { PlayerService } from 'src/app/shared/services/player';
 import { RoomService } from 'src/app/shared/services/room';
@@ -8,16 +9,19 @@ import { RoomService } from 'src/app/shared/services/room';
   selector: 'app-main',
   templateUrl: './component.html',
   styleUrls: ['./component.css'],
-  providers: [MessageService],
+  providers: [MessageService, GameService],
 })
 export class MainComponent implements OnInit, OnDestroy {
   constructor(
-    public drawingService: DrawingService,
     public roomService: RoomService,
-    private playerService: PlayerService
+    public playerService: PlayerService,
+    public gameService: GameService,
+    private drawingService: DrawingService
   ) {}
 
   ngOnInit(): void {
+    this.gameService.init();
+    this.drawingService.listenDrawedImage();
     if (this.roomService.currentRoom) {
       const room = this.roomService.currentRoom;
       this.roomService.emitJoinRoom(room);

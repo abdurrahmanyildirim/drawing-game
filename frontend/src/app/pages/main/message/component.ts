@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MessageService } from 'src/app/shared/services/message';
 import { Message } from 'src/app/shared/services/message/model';
@@ -14,6 +20,7 @@ export class MessageComponent implements OnInit, OnDestroy {
   msg = '';
   messages: Message[] = [];
   msgStreamListener: Subscription;
+  @ViewChild('msgBox') msgBox: ElementRef<HTMLElement>;
 
   constructor(
     public messageService: MessageService,
@@ -24,9 +31,13 @@ export class MessageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log(this.messages);
     this.messageService.listenNewMessage();
-    this.msgStreamListener = this.messageService.msgStream.subscribe({
+    this.msgStreamListener = this.messageService.msgStream$.subscribe({
       next: (msg: Message) => {
         this.messages.push(msg);
+        setTimeout(() => {
+          const elem = this.msgBox.nativeElement;
+          elem.scrollTop = elem.scrollHeight;
+        });
       },
     });
   }

@@ -1,0 +1,41 @@
+<div class="case-container" *ngIf="gameService.game.status ==='playing'">
+  <ng-container
+    *ngIf="gameService.game.currentPlayer.id === playerService.player.id"
+  >
+    <app-drawing-table></app-drawing-table>
+  </ng-container>
+  <ng-container
+    *ngIf="gameService.game.currentPlayer.id !== playerService.player.id"
+  >
+    <img class="img" [src]="drawingService.drawedImg" alt="" />
+  </ng-container>
+</div>
+
+<div class="case-container" *ngIf="gameService.game.status ==='inactive'">
+  <div *ngIf="playerService.player.id === roomService.currentRoom.owner.id">
+    <button (click)="startGame()">Start Game</button>
+  </div>
+  <div *ngIf="playerService.player.id !== roomService.currentRoom.owner.id">
+    <h2>Oyunun Başlaması Bekleniyor...</h2>
+  </div>
+</div>
+
+<div class="case-container" *ngIf="gameService.game.status ==='roundBreak'">
+  <div *ngIf="playerService.player.id !== gameService.game.currentPlayer.id">
+    <h2>Oyun Arası, Kelime seçiliyor. 10 saniye içinde başlayacak.</h2>
+  </div>
+  <div *ngIf="playerService.player.id === gameService.game.currentPlayer.id">
+    <h2>{{gameService.game.word}}</h2>
+    <div>Bu Kelimeyi 100 saniye içinde çizerek anlatınız.</div>
+  </div>
+</div>
+
+<div class="case-container" *ngIf="gameService.game.status ==='end' ">
+  <h2>Oyun Bitti. Skor tablosu gösterilecek</h2>
+  <div>
+    <button (click)="playAgain()">Play Again</button>
+  </div>
+  <div>
+    <button (click)="leave()">Leave</button>
+  </div>
+</div>

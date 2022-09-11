@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-basic-title">Oda Bilgileri</h4>
+  <h4 class="modal-title" id="modal-basic-title">Room Settings</h4>
   <button
     type="button"
     class="btn-close"
@@ -9,7 +9,7 @@
 </div>
 <div class="modal-body">
   <div class="form-group">
-    <label for="name">*Oda İsmi</label>
+    <label for="name">*Name</label>
     <input
       class="form-control"
       [(ngModel)]="name"
@@ -20,7 +20,7 @@
     />
   </div>
   <div class="form-group">
-    <label for="password">*Şifre</label>
+    <label for="password">*Password</label>
     <input
       class="form-control"
       [(ngModel)]="password"
@@ -42,7 +42,7 @@
       (ngModelChange)="onHasPasswordChange()"
       type="checkbox"
     />
-    <label for="hasPassword">Şifreyi Kaldır</label>
+    <label for="hasPassword">No Password</label>
   </div>
 </div>
 <div class="modal-footer">
@@ -52,6 +52,6 @@
     [disabled]="!areInputsValid"
     (click)="createNewRoom()"
   >
-    Oluştur
+    Create
   </button>
 </div>

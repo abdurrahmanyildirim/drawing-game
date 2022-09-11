@@ -6,22 +6,32 @@
 }
 
 .top {
-  height: 60%;
-  /* flex: 0.6; */
+  flex: 0.6;
 }
 
 .bottom {
-  height: 40%;
   display: flex;
+  flex-direction: column;
+  flex: 0.4;
+  overflow: hidden;
+}
+
+.players-messages {
+  display: flex;
+  align-items: flex-start;
+  flex-grow: 1;
+  overflow: hidden;
 }
 
 .players {
   width: 30%;
   min-width: 130px;
+  height: 100%;
+  overflow: auto;
 }
 
 .player {
-  margin: 5px;
+  margin: 5px 0 5px 5px;
   padding: 5px;
   border-radius: 5px;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.35);
@@ -30,17 +40,17 @@
 }
 
 .player-picture {
-  /* width: 60px; */
-  max-width: 60px;
+  max-width: 40px;
   min-width: 40px;
-  max-height: 60px;
-  min-height: 60px;
-  /* height: 60px; */
+  max-height: 40px;
+  min-height: 40px;
   margin-right: 10px;
-  margin-left: 10px;
+  margin-left: 5px;
 }
 
 .messages {
   width: 70%;
   padding: 5px 0 0 5px;
+  height: 100%;
+  max-height: 100%;
 }

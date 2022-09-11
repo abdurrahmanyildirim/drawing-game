@@ -66,7 +66,8 @@ app.post('/login', (req, res) => {
     const newPlayer = {
         id: uuid.v4(),
         name,
-        point: 0
+        point: 0,
+        didDraw: false
     }
     players.set(name, newPlayer);
     res.status(200).send(newPlayer);
@@ -92,6 +93,10 @@ io.on('connection', (socket) => {
 
     socket.on('updateRoom', (room) => {
         io.to(room.id).emit('updateRoom', room);
+    });
+
+    socket.on('updateGame', (game, room) => {
+        io.to(room.id).emit('updateGame', game);
     });
 
     socket.on('newRoom', (room) => {

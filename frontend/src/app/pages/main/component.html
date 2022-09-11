@@ -1,27 +1,32 @@
 <main class="main-container">
   <section class="top">
-    <app-drawing-table></app-drawing-table>
-  </section>
-  <section>
-    <ngb-progressbar [value]="100" [striped]="true" [animated]="true">
-    </ngb-progressbar>
+    <app-play-ground></app-play-ground>
   </section>
   <section class="bottom">
-    <section class="players">
-      <div
-        class="player"
-        *ngFor="let player of roomService.currentRoom.players"
+    <div>
+      <ngb-progressbar
+        [value]="gameService.game.drawTime"
+        [striped]="true"
+        [animated]="true"
       >
-        <div class="player-picture player-icon"></div>
-        <div class="player-info">
-          <div>{{player.name}}</div>
-          <div>{{player.point}} Point</div>
+      </ngb-progressbar>
+    </div>
+    <div class="players-messages">
+      <section class="players">
+        <div
+          class="player"
+          *ngFor="let player of roomService.currentRoom.players"
+        >
+          <div class="player-picture player-icon"></div>
+          <div class="player-info">
+            <div>{{player.name}}</div>
+            <div>{{player.point}} Point</div>
+          </div>
         </div>
-      </div>
-    </section>
-    <section class="messages">
-      <app-message></app-message>
-    </section>
-    <!-- <img [src]="drawingService.drawedImg" style="height: 400px; width: 400px" /> -->
+      </section>
+      <section class="messages">
+        <app-message></app-message>
+      </section>
+    </div>
   </section>
 </main>

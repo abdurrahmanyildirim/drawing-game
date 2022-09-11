@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { RoomService } from '../room';
+import { Subject } from 'rxjs';
 import { Room } from '../room/model';
 import { Message } from './model';
 
 @Injectable()
 export class MessageService {
-  msgStream = new Subject();
+  msgStream$ = new Subject();
 
   constructor(private socket: Socket) {}
 
@@ -17,7 +16,7 @@ export class MessageService {
 
   listenNewMessage(): void {
     this.socket.on('message', (message: Message) => {
-      this.msgStream.next(message);
+      this.msgStream$.next(message);
     });
   }
 }

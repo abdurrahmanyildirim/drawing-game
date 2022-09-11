@@ -59,6 +59,12 @@ export class RoomService {
     });
   }
 
+  updatePlayerInRoom(player: Player): void {
+    const index = this.currentRoom.players.indexOf(player);
+    this.currentRoom.players[index] = player;
+    this.emitUpdateRoom(this.currentRoom);
+  }
+
   emitNewRoom(room: Room): void {
     this.socket.emit('newRoom', room);
   }

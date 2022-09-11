@@ -9,14 +9,25 @@
 
 .message-box {
   flex-grow: 1;
+  overflow: auto;
 }
 
 .message {
-  margin: 10px 5px;
+  margin: 3px 0 3px 10px;
 }
 
 .message-input {
   display: flex;
+}
+
+.player-name {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.message-content {
+  font-weight: 500;
+  font-size: 14px;
 }
 
 .my-input {

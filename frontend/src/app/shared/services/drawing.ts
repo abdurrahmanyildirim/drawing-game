@@ -16,7 +16,6 @@ export class DrawingService implements OnDestroy {
   lineWidth = 5;
   replacementY = 23;
   replacementX = 0;
-
   drawedImg = null;
 
   constructor(
@@ -27,7 +26,6 @@ export class DrawingService implements OnDestroy {
   init(canvas: ElementRef<HTMLCanvasElement>): void {
     this.canvas = canvas;
     this.context = this.canvas.nativeElement.getContext('2d');
-    this.listenDrawedImage();
   }
 
   resizeCanvas(container: HTMLElement): void {
@@ -82,7 +80,7 @@ export class DrawingService implements OnDestroy {
     this.draw(event);
   }
 
-  updateStream(): void {
+  emitDrawing(): void {
     const canvasContent = this.canvas.nativeElement.toDataURL();
     const bufferedContent = LZUTF8.compress(canvasContent, {
       outputEncoding: 'Base64',
@@ -93,7 +91,7 @@ export class DrawingService implements OnDestroy {
   finishedPosition(): void {
     this.painting = false;
     this.context.beginPath();
-    this.updateStream();
+    this.emitDrawing();
   }
 
   activateEraser(): void {
@@ -135,10 +133,10 @@ export class DrawingService implements OnDestroy {
       this.canvas.nativeElement.width,
       this.canvas.nativeElement.height
     );
-    this.updateStream();
+    this.emitDrawing();
   }
 
   ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
+    // throw new Error('Method not implemented.');
   }
 }

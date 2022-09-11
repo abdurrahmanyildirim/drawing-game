@@ -1,7 +1,7 @@
 <div class="message-container">
-  <div class="message-box">
+  <div class="message-box" #msgBox>
     <div class="message" *ngFor="let msg of messages">
-      <span class="player-name">{{msg.sender.name}}</span> :
+      <span class="player-name">{{msg.sender.name}} : </span>
       <span class="message-content">{{msg.msg}}</span>
     </div>
   </div>
