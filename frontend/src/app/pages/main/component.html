@@ -8,6 +8,7 @@
         [value]="gameService.game.drawTime"
         [striped]="true"
         [animated]="true"
+        [type]="gameService.game.drawTime > 70 ? 'success': gameService.game.drawTime > 30 ? 'warning': 'danger' "
       >
       </ngb-progressbar>
     </div>

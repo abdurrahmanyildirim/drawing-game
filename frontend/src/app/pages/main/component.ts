@@ -1,9 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { DrawingService } from 'src/app/shared/services/drawing';
 import { GameService } from 'src/app/shared/services/game';
 import { MessageService } from 'src/app/shared/services/message';
 import { PlayerService } from 'src/app/shared/services/player';
 import { RoomService } from 'src/app/shared/services/room';
+import { SessionStorageService } from 'src/app/shared/services/session-storage';
+import { SessionKey } from 'src/app/shared/services/session-storage/model';
 
 @Component({
   selector: 'app-main',
@@ -16,15 +18,23 @@ export class MainComponent implements OnInit, OnDestroy {
     public roomService: RoomService,
     public playerService: PlayerService,
     public gameService: GameService,
-    private drawingService: DrawingService
+    private drawingService: DrawingService,
+    private sessionStorageService: SessionStorageService
   ) {}
+
+  // @HostListener('window:beforeunload', ['$event'])
+  // onbeforeunload(event) {
+  //   event.preventDefault();
+  //   event.returnValue = false;
+  // }
 
   ngOnInit(): void {
     this.gameService.init();
     this.drawingService.listenDrawedImage();
     if (this.roomService.currentRoom) {
       const room = this.roomService.currentRoom;
-      this.roomService.emitJoinRoom(room);
+      console.log(this.playerService.player);
+      this.roomService.emitJoinRoom(room, this.playerService.player);
       this.roomService.emitUpdateRoom(room);
       // this.roomService.joinRoom(
       //   this.playerService.player,
@@ -33,5 +43,8 @@ export class MainComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    console.log('Main Destroyed');
+    this.sessionStorageService.removeItem(SessionKey.Room);
+  }
 }

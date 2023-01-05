@@ -14,6 +14,7 @@ import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NewRoomComponent } from './pages/landing/new-room/component';
 import { MessageComponent } from './pages/main/message/component';
 import { PlayGroundComponent } from './pages/main/play-ground/component';
+import { ConfirmationGuard } from './shared/guards/confirmation';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -36,7 +37,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     SocketIoModule.forRoot(config),
     NgbModule,
   ],
-  providers: [NgbActiveModal],
+  providers: [NgbActiveModal, ConfirmationGuard],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

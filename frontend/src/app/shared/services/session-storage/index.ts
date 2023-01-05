@@ -10,4 +10,8 @@ export class SessionStorageService {
   getItem<T>(key: SessionKey): T {
     return JSON.parse(window.sessionStorage.getItem(key));
   }
+
+  removeItem(key: SessionKey): void {
+    window.sessionStorage.removeItem(key);
+  }
 }

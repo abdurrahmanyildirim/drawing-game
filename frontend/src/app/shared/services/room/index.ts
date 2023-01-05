@@ -69,8 +69,8 @@ export class RoomService {
     this.socket.emit('newRoom', room);
   }
 
-  emitJoinRoom(room: Room): void {
-    this.socket.emit('joinRoom', room);
+  emitJoinRoom(room: Room, player: Player): void {
+    this.socket.emit('joinRoom', room, player);
   }
 
   emitLeaveRoom(room: Room): void {
@@ -78,7 +78,7 @@ export class RoomService {
   }
 
   leaveRoom(player: Player, room: Room): Observable<any> {
-    return this.http.post(environment.baseUrl + '/leave-room', {
+    return this.http.post(environment.baseUrl + 'room/leave', {
       player,
       room,
     });
@@ -89,14 +89,14 @@ export class RoomService {
   }
 
   createRoom(room: Room): Observable<Room> {
-    return this.http.post<Room>(environment.baseUrl + '/create-room', room);
+    return this.http.post<Room>(environment.baseUrl + '/room/create', room);
   }
 
   getRooms() {
-    return this.http.get(environment.baseUrl + '/rooms');
+    return this.http.get(environment.baseUrl + '/');
   }
 
   joinRoom(player: Player, room: Room): Observable<any> {
-    return this.http.post(environment.baseUrl + '/join-room', { player, room });
+    return this.http.post(environment.baseUrl + '/room/join', { player, room });
   }
 }

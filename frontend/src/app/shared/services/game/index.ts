@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
+import { DrawingService } from '../drawing';
 import { MessageService } from '../message';
 import { Player } from '../player/model';
 import { RoomService } from '../room';
@@ -15,7 +16,8 @@ export class GameService {
   constructor(
     private messageService: MessageService,
     private roomService: RoomService,
-    private socket: Socket
+    private socket: Socket,
+    private drawingService: DrawingService
   ) {
     setTimeout(() => {
       this.listenGameChanges();
@@ -25,7 +27,7 @@ export class GameService {
   init(): void {
     this.game = {
       breakTime: 10,
-      drawTime: 30,
+      drawTime: 20,
       status: GameStatus.Inactive,
     };
   }
@@ -81,8 +83,9 @@ export class GameService {
     this.game = {
       ...this.game,
       breakTime: 10,
-      drawTime: 30,
+      drawTime: 20,
     };
+    this.drawingService.clean();
     this.emitChangesOnGame();
   }
 

@@ -4,9 +4,15 @@ import { LandingComponent } from './pages/landing/component';
 import { LoginComponent } from './pages/login/component';
 import { MainComponent } from './pages/main/component';
 import { AuthGuard } from './shared/guards/auth';
+import { ConfirmationGuard } from './shared/guards/confirmation';
 
 const routes: Routes = [
-  { path: '', component: MainComponent, canActivate: [AuthGuard] },
+  {
+    path: '',
+    component: MainComponent,
+    canActivate: [AuthGuard],
+    canDeactivate: [ConfirmationGuard],
+  },
   { path: 'landing', component: LandingComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: '**', redirectTo: '', pathMatch: 'prefix' },
